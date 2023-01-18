@@ -1,190 +1,202 @@
-# SRGAN-PyTorch
+<p align="center">
+  <img src="assets/gfpgan_logo.png" height=130>
+</p>
 
-## Overview
+## <div align="center"><b><a href="README.md">English</a> | <a href="README_CN.md">简体中文</a></b></div>
 
-This repository contains an op-for-op PyTorch reimplementation of [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](https://arxiv.org/abs/1609.04802v5).
+<div align="center">
+<!-- <a href="https://twitter.com/_Xintao_" style="text-decoration:none;">
+    <img src="https://user-images.githubusercontent.com/17445847/187162058-c764ced6-952f-404b-ac85-ba95cce18e7b.png" width="4%" alt="" />
+</a> -->
 
-## Table of contents
+[![download](https://img.shields.io/github/downloads/TencentARC/GFPGAN/total.svg)](https://github.com/TencentARC/GFPGAN/releases)
+[![PyPI](https://img.shields.io/pypi/v/gfpgan)](https://pypi.org/project/gfpgan/)
+[![Open issue](https://img.shields.io/github/issues/TencentARC/GFPGAN)](https://github.com/TencentARC/GFPGAN/issues)
+[![Closed issue](https://img.shields.io/github/issues-closed/TencentARC/GFPGAN)](https://github.com/TencentARC/GFPGAN/issues)
+[![LICENSE](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/TencentARC/GFPGAN/blob/master/LICENSE)
+[![python lint](https://github.com/TencentARC/GFPGAN/actions/workflows/pylint.yml/badge.svg)](https://github.com/TencentARC/GFPGAN/blob/master/.github/workflows/pylint.yml)
+[![Publish-pip](https://github.com/TencentARC/GFPGAN/actions/workflows/publish-pip.yml/badge.svg)](https://github.com/TencentARC/GFPGAN/blob/master/.github/workflows/publish-pip.yml)
+</div>
 
-- [SRGAN-PyTorch](#srgan-pytorch)
-    - [Overview](#overview)
-    - [Table of contents](#table-of-contents)
-    - [Download weights](#download-weights)
-    - [Download datasets](#download-datasets)
-    - [How Test and Train](#how-test-and-train)
-        - [Test](#test)
-        - [Train SRResNet model](#train-srresnet-model)
-        - [Resume train SRResNet model](#resume-train-srresnet-model)
-        - [Train SRGAN model](#train-srgan-model)
-        - [Resume train SRGAN model](#resume-train-srgan-model)
-    - [Result](#result)
-    - [Contributing](#contributing)
-    - [Credit](#credit)
-        - [Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network](#photo-realistic-single-image-super-resolution-using-a-generative-adversarial-network)
+1. :boom: **Updated** online demo: [![Replicate](https://img.shields.io/static/v1?label=Demo&message=Replicate&color=blue)](https://replicate.com/tencentarc/gfpgan). Here is the [backup](https://replicate.com/xinntao/gfpgan).
+1. :boom: **Updated** online demo: [![Huggingface Gradio](https://img.shields.io/static/v1?label=Demo&message=Huggingface%20Gradio&color=orange)](https://huggingface.co/spaces/Xintao/GFPGAN)
+1. [Colab Demo](https://colab.research.google.com/drive/1sVsoBd9AjckIXThgtZhGrHRfFI6UUYOo) for GFPGAN <a href="https://colab.research.google.com/drive/1sVsoBd9AjckIXThgtZhGrHRfFI6UUYOo"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="google colab logo"></a>; (Another [Colab Demo](https://colab.research.google.com/drive/1Oa1WwKB4M4l1GmR7CtswDVgOCOeSLChA?usp=sharing) for the original paper model)
 
-## Download weights
+<!-- 3. Online demo: [Replicate.ai](https://replicate.com/xinntao/gfpgan) (may need to sign in, return the whole image)
+4. Online demo: [Baseten.co](https://app.baseten.co/applications/Q04Lz0d/operator_views/8qZG6Bg) (backed by GPU, returns the whole image)
+5. We provide a *clean* version of GFPGAN, which can run without CUDA extensions. So that it can run in **Windows** or on **CPU mode**. -->
 
-- [Google Driver](https://drive.google.com/drive/folders/17ju2HN7Y6pyPK2CC_AqnAfTOe9_3hCQ8?usp=sharing)
-- [Baidu Driver](https://pan.baidu.com/s/1yNs4rqIb004-NKEdKBJtYg?pwd=llot)
+> :rocket: **Thanks for your interest in our work. You may also want to check our new updates on the *tiny models* for *anime images and videos* in [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN/blob/master/docs/anime_video_model.md)** :blush:
 
-## Download datasets
+GFPGAN aims at developing a **Practical Algorithm for Real-world Face Restoration**.<br>
+It leverages rich and diverse priors encapsulated in a pretrained face GAN (*e.g.*, StyleGAN2) for blind face restoration.
 
-Contains DIV2K, DIV8K, Flickr2K, OST, T91, Set5, Set14, BSDS100 and BSDS200, etc.
+:question: Frequently Asked Questions can be found in [FAQ.md](FAQ.md).
 
-- [Google Driver](https://drive.google.com/drive/folders/1A6lzGeQrFMxPqJehK9s37ce-tPDj20mD?usp=sharing)
-- [Baidu Driver](https://pan.baidu.com/s/1o-8Ty_7q6DiS3ykLU09IVg?pwd=llot)
+:triangular_flag_on_post: **Updates**
 
-Please refer to `README.md` in the `data` directory for the method of making a dataset.
+- :white_check_mark: Add [RestoreFormer](https://github.com/wzhouxiff/RestoreFormer) inference codes.
+- :white_check_mark: Add [V1.4 model](https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth), which produces slightly more details and better identity than V1.3.
+- :white_check_mark: Add **[V1.3 model](https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth)**, which produces **more natural** restoration results, and better results on *very low-quality* / *high-quality* inputs. See more in [Model zoo](#european_castle-model-zoo), [Comparisons.md](Comparisons.md)
+- :white_check_mark: Integrated to [Huggingface Spaces](https://huggingface.co/spaces) with [Gradio](https://github.com/gradio-app/gradio). See [Gradio Web Demo](https://huggingface.co/spaces/akhaliq/GFPGAN).
+- :white_check_mark: Support enhancing non-face regions (background) with [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN).
+- :white_check_mark: We provide a *clean* version of GFPGAN, which does not require CUDA extensions.
+- :white_check_mark: We provide an updated model without colorizing faces.
 
-## How Test and Train
+---
 
-Both training and testing only need to modify the `srresnet_config.py` file and `srgan_config.py` file. 
+If GFPGAN is helpful in your photos/projects, please help to :star: this repo or recommend it to your friends. Thanks:blush:
+Other recommended projects:<br>
+:arrow_forward: [Real-ESRGAN](https://github.com/xinntao/Real-ESRGAN): A practical algorithm for general image restoration<br>
+:arrow_forward: [BasicSR](https://github.com/xinntao/BasicSR): An open-source image and video restoration toolbox<br>
+:arrow_forward: [facexlib](https://github.com/xinntao/facexlib): A collection that provides useful face-relation functions<br>
+:arrow_forward: [HandyView](https://github.com/xinntao/HandyView): A PyQt5-based image viewer that is handy for view and comparison<br>
 
-### Test
+---
 
-Modify the `srgan_config.py` file.
+### :book: GFP-GAN: Towards Real-World Blind Face Restoration with Generative Facial Prior
 
-- line 32: `g_arch_name` change to `srresnet_x4`.
-- line 39: `upscale_factor` change to `4`.
-- line 41: `mode` change to `test`.
-- line 43: `exp_name` change to `SRGAN_x4-DIV2K`.
-- line 96: `g_model_weights_path` change to `./results/pretrained_models/SRGAN_x4-ImageNet-8c4a7569.pth.tar`.
+> [[Paper](https://arxiv.org/abs/2101.04061)] &emsp; [[Project Page](https://xinntao.github.io/projects/gfpgan)] &emsp; [Demo] <br>
+> [Xintao Wang](https://xinntao.github.io/), [Yu Li](https://yu-li.github.io/), [Honglun Zhang](https://scholar.google.com/citations?hl=en&user=KjQLROoAAAAJ), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en) <br>
+> Applied Research Center (ARC), Tencent PCG
 
-```bash
-python3 test.py
-```
+<p align="center">
+  <img src="https://xinntao.github.io/projects/GFPGAN_src/gfpgan_teaser.jpg">
+</p>
 
-### Train SRResNet model
+---
 
-Modify the `srresnet_config.py` file.
+## :wrench: Dependencies and Installation
 
-- line 32: `g_arch_name` change to `srresnet_x4`.
-- line 39: `upscale_factor` change to `4`.
-- line 41: `mode` change to `train`.
-- line 43: `exp_name` change to `SRResNet_x4-DIV2K`.
+- Python >= 3.7 (Recommend to use [Anaconda](https://www.anaconda.com/download/#linux) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html))
+- [PyTorch >= 1.7](https://pytorch.org/)
+- Option: NVIDIA GPU + [CUDA](https://developer.nvidia.com/cuda-downloads)
+- Option: Linux
 
-```bash
-python3 train_srresnet.py
-```
+### Installation
 
-### Resume train SRResNet model
+We now provide a *clean* version of GFPGAN, which does not require customized CUDA extensions. <br>
+If you want to use the original model in our paper, please see [PaperModel.md](PaperModel.md) for installation.
 
-Modify the `srresnet_config.py` file.
+1. Clone repo
 
-- line 32: `g_arch_name` change to `srresnet_x4`.
-- line 39: `upscale_factor` change to `4`.
-- line 41: `mode` change to `train`.
-- line 43: `exp_name` change to `SRResNet_x4-DIV2K`.
-- line 59: `resume_g_model_weights_path` change to `./samples/SRGAN_x4-DIV2K/g_epoch_xxx.pth.tar`.
+    ```bash
+    git clone https://github.com/TencentARC/GFPGAN.git
+    cd GFPGAN
+    ```
 
+1. Install dependent packages
 
-```bash
-python3 train_srresnet.py
-```
+    ```bash
+    # Install basicsr - https://github.com/xinntao/BasicSR
+    # We use BasicSR for both training and inference
+    pip install basicsr
 
-### Train SRGAN model
+    # Install facexlib - https://github.com/xinntao/facexlib
+    # We use face detection and face restoration helper in the facexlib package
+    pip install facexlib
 
-- line 31: `d_arch_name` change to `discriminator`.
-- line 32: `g_arch_name` change to `srresnet_x4`.
-- line 39: `upscale_factor` change to `4`.
-- line 41: `mode` change to `train`.
-- line 43: `exp_name` change to `SRGAN_x4-DIV2K`.
-- line 58: `pretrained_g_model_weights_path` change to `./results/SRResNet_x4-DIV2K/g_last.pth.tar`.
+    pip install -r requirements.txt
+    python setup.py develop
 
-```bash
-python3 train_srgan.py
-```
+    # If you want to enhance the background (non-face) regions with Real-ESRGAN,
+    # you also need to install the realesrgan package
+    pip install realesrgan
+    ```
 
-### Resume train SRGAN model
+## :zap: Quick Inference
 
-- line 31: `d_arch_name` change to `discriminator`.
-- line 32: `g_arch_name` change to `srresnet_x4`.
-- line 39: `upscale_factor` change to `4`.
-- line 41: `mode` change to `train`.
-- line 43: `exp_name` change to `SRGAN_x4-DIV2K`.
-- line 61: `resume_d_model_weights_path` change to `./samples/SRGAN_x4-DIV2K/d_epoch_xxx.pth.tar`.
-- line 62: `resume_g_model_weights_path` change to `./samples/SRGAN_x4-DIV2K/g_epoch_xxx.pth.tar`.
+We take the v1.3 version for an example. More models can be found [here](#european_castle-model-zoo).
 
-
-```bash
-python3 train_srgan.py
-```
-
-## Result
-
-Source of original paper results: [https://arxiv.org/pdf/1609.04802v5.pdf](https://arxiv.org/pdf/1609.04802v5.pdf)
-
-In the following table, the psnr value in `()` indicates the result of the project, and `-` indicates no test.
-
-| Set5 | Scale |      SRResNet      |       SRGAN        |
-|:----:|:-----:|:------------------:|:------------------:|
-| PSNR |   4   |  32.05(**32.14**)  |  29.40(**30.64**)  |
-| SSIM |   4   | 0.9019(**0.8954**) | 0.8472(**0.8642**) |
-
-| Set14 | Scale |      SRResNet      |       SRGAN        |
-|:-----:|:-----:|:------------------:|:------------------:|
-| PSNR  |   4   |  28.49(**28.57**)  |  26.02(**27.12**)  |
-| SSIM  |   4   | 0.8184(**0.7815**) | 0.7397(**0.7321**) |
-
-| BSD100 | Scale |      SRResNet      |       SRGAN        |
-|:------:|:-----:|:------------------:|:------------------:|
-|  PSNR  |   4   |  27.58(**27.56**)  |  25.16(**26.22**)  |
-|  SSIM  |   4   | 0.7620(**0.7367**) | 0.6688(**0.6867**) |
+Download pre-trained models: [GFPGANv1.3.pth](https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth)
 
 ```bash
-# Download `SRGAN_x4-ImageNet-8c4a7569.pth.tar` weights to `./results/pretrained_models`
-# More detail see `README.md<Download weights>`
-python3 ./inference.py
+wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P experiments/pretrained_models
 ```
 
-Input: 
+**Inference!**
 
-<span align="center"><img width="240" height="360" src="figure/comic_lr.png"/></span>
-
-Output: 
-
-<span align="center"><img width="240" height="360" src="figure/comic_sr.png"/></span>
-
-```text
-Build `srresnet_x4` model successfully.
-Load `srresnet_x4` model weights `./results/pretrained_models/SRGAN_x4-ImageNet-8c4a7569.pth.tar` successfully.
-SR image save to `./figure/comic_sr.png`
+```bash
+python inference_gfpgan.py -i inputs/whole_imgs -o results -v 1.3 -s 2
 ```
 
-## Contributing
+```console
+Usage: python inference_gfpgan.py -i inputs/whole_imgs -o results -v 1.3 -s 2 [options]...
 
-If you find a bug, create a GitHub issue, or even better, submit a pull request. Similarly, if you have questions, simply post them as GitHub issues.
-
-I look forward to seeing what the community does with these models!
-
-## Credit
-
-### Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network
-
-_Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan
-Wang, Wenzhe Shi_ <br>
-
-**Abstract** <br>
-Despite the breakthroughs in accuracy and speed of single image super-resolution using faster and deeper convolutional neural networks, one central
-problem remains largely unsolved: how do we recover the finer texture details when we super-resolve at large upscaling factors? The behavior of
-optimization-based super-resolution methods is principally driven by the choice of the objective function. Recent work has largely focused on
-minimizing the mean squared reconstruction error. The resulting estimates have high peak signal-to-noise ratios, but they are often lacking
-high-frequency details and are perceptually unsatisfying in the sense that they fail to match the fidelity expected at the higher resolution. In this
-paper, we present SRGAN, a generative adversarial network (GAN) for image super-resolution (SR). To our knowledge, it is the first framework capable
-of inferring photo-realistic natural images for 4x upscaling factors. To achieve this, we propose a perceptual loss function which consists of an
-adversarial loss and a content loss. The adversarial loss pushes our solution to the natural image manifold using a discriminator network that is
-trained to differentiate between the super-resolved images and original photo-realistic images. In addition, we use a content loss motivated by
-perceptual similarity instead of similarity in pixel space. Our deep residual network is able to recover photo-realistic textures from heavily
-downsampled images on public benchmarks. An extensive mean-opinion-score (MOS) test shows hugely significant gains in perceptual quality using SRGAN.
-The MOS scores obtained with SRGAN are closer to those of the original high-resolution images than to those obtained with any state-of-the-art method.
-
-[[Paper]](https://arxiv.org/pdf/1609.04802v5.pdf)
-
-```bibtex
-@InProceedings{srgan,
-    author = {Christian Ledig, Lucas Theis, Ferenc Huszar, Jose Caballero, Andrew Cunningham, Alejandro Acosta, Andrew Aitken, Alykhan Tejani, Johannes Totz, Zehan Wang, Wenzhe Shi},
-    title = {Photo-Realistic Single Image Super-Resolution Using a Generative Adversarial Network},
-    booktitle = {arXiv},
-    year = {2016}
-}
+  -h                   show this help
+  -i input             Input image or folder. Default: inputs/whole_imgs
+  -o output            Output folder. Default: results
+  -v version           GFPGAN model version. Option: 1 | 1.2 | 1.3. Default: 1.3
+  -s upscale           The final upsampling scale of the image. Default: 2
+  -bg_upsampler        background upsampler. Default: realesrgan
+  -bg_tile             Tile size for background sampler, 0 for no tile during testing. Default: 400
+  -suffix              Suffix of the restored faces
+  -only_center_face    Only restore the center face
+  -aligned             Input are aligned faces
+  -ext                 Image extension. Options: auto | jpg | png, auto means using the same extension as inputs. Default: auto
 ```
+
+If you want to use the original model in our paper, please see [PaperModel.md](PaperModel.md) for installation and inference.
+
+## :european_castle: Model Zoo
+
+| Version | Model Name  | Description |
+| :---: | :---:        |     :---:      |
+| V1.3 | [GFPGANv1.3.pth](https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth) | Based on V1.2; **more natural** restoration results; better results on very low-quality / high-quality inputs. |
+| V1.2 | [GFPGANCleanv1-NoCE-C2.pth](https://github.com/TencentARC/GFPGAN/releases/download/v0.2.0/GFPGANCleanv1-NoCE-C2.pth) | No colorization; no CUDA extensions are required. Trained with more data with pre-processing. |
+| V1 | [GFPGANv1.pth](https://github.com/TencentARC/GFPGAN/releases/download/v0.1.0/GFPGANv1.pth) | The paper model, with colorization. |
+
+The comparisons are in [Comparisons.md](Comparisons.md).
+
+Note that V1.3 is not always better than V1.2. You may need to select different models based on your purpose and inputs.
+
+| Version | Strengths  | Weaknesses |
+| :---: | :---:        |     :---:      |
+|V1.3 |  ✓ natural outputs<br> ✓better results on very low-quality inputs <br> ✓ work on relatively high-quality inputs <br>✓ can have repeated (twice) restorations | ✗ not very sharp <br> ✗ have a slight change on identity |
+|V1.2 |  ✓ sharper output <br> ✓ with beauty makeup | ✗ some outputs are unnatural |
+
+You can find **more models (such as the discriminators)** here: [[Google Drive](https://drive.google.com/drive/folders/17rLiFzcUMoQuhLnptDsKolegHWwJOnHu?usp=sharing)], OR [[Tencent Cloud 腾讯微云](https://share.weiyun.com/ShYoCCoc)]
+
+## :computer: Training
+
+We provide the training codes for GFPGAN (used in our paper). <br>
+You could improve it according to your own needs.
+
+**Tips**
+
+1. More high quality faces can improve the restoration quality.
+2. You may need to perform some pre-processing, such as beauty makeup.
+
+**Procedures**
+
+(You can try a simple version ( `options/train_gfpgan_v1_simple.yml`) that does not require face component landmarks.)
+
+1. Dataset preparation: [FFHQ](https://github.com/NVlabs/ffhq-dataset)
+
+1. Download pre-trained models and other data. Put them in the `experiments/pretrained_models` folder.
+    1. [Pre-trained StyleGAN2 model: StyleGAN2_512_Cmul1_FFHQ_B12G4_scratch_800k.pth](https://github.com/TencentARC/GFPGAN/releases/download/v0.1.0/StyleGAN2_512_Cmul1_FFHQ_B12G4_scratch_800k.pth)
+    1. [Component locations of FFHQ: FFHQ_eye_mouth_landmarks_512.pth](https://github.com/TencentARC/GFPGAN/releases/download/v0.1.0/FFHQ_eye_mouth_landmarks_512.pth)
+    1. [A simple ArcFace model: arcface_resnet18.pth](https://github.com/TencentARC/GFPGAN/releases/download/v0.1.0/arcface_resnet18.pth)
+
+1. Modify the configuration file `options/train_gfpgan_v1.yml` accordingly.
+
+1. Training
+
+> python -m torch.distributed.launch --nproc_per_node=4 --master_port=22021 gfpgan/train.py -opt options/train_gfpgan_v1.yml --launcher pytorch
+
+## :scroll: License and Acknowledgement
+
+GFPGAN is released under Apache License Version 2.0.
+
+## BibTeX
+
+    @InProceedings{wang2021gfpgan,
+        author = {Xintao Wang and Yu Li and Honglun Zhang and Ying Shan},
+        title = {Towards Real-World Blind Face Restoration with Generative Facial Prior},
+        booktitle={The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+        year = {2021}
+    }
+
+## :e-mail: Contact
+
+If you have any question, please email `xintao.wang@outlook.com` or `xintaowang@tencent.com`.
