@@ -50,9 +50,9 @@ def build_model(model_arch_name: str, device: torch.device) -> nn.Module:
 def main(args):
     device = choice_device(args.device_type)
 
-    # Initialize the model
-#     sr_model = build_model(args.model_arch_name, device)
-#     print(f"Build `{args.model_arch_name}` model successfully.")
+    Initialize the model
+    sr_model = build_model(args.model_arch_name, device)
+    print(f"Build `{args.model_arch_name}` model successfully.")
 
     # Load model weights
     sr_model = load_state_dict(sr_model, args.model_weights_path)
